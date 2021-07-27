@@ -65,6 +65,12 @@
             <version>42.2.23</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.smartregister</groupId>
+            <artifactId>hapi-fhir-keycloak</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- Needed for Email subscriptions -->
         <dependency>
             <groupId>com.sun.mail</groupId>
@@ -304,15 +310,12 @@
             <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring_boot_version}</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
     <build>
