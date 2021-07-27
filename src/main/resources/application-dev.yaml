@@ -11,7 +11,7 @@ spring:
       auto-commit: false
 
 keycloak:
-  auth-server-url: https://keycloak.dev.sid-indonesia.org/
+  auth-server-url: https://keycloak.dev.sid-indonesia.org/auth
   realm: develop
   resource: dev-client
   public-client: true
