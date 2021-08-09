@@ -56,9 +56,9 @@ public class Application extends SpringBootServletInitializer {
 
   @Bean
   @Conditional(OnEitherVersion.class)
-  public ServletRegistrationBean hapiServletRegistration() {
-    ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
-    JpaRestfulServer jpaRestfulServer = new JpaRestfulServer();
+  public ServletRegistrationBean<JpaRestfulServer> hapiServletRegistration() {
+    ServletRegistrationBean<JpaRestfulServer> servletRegistrationBean = new ServletRegistrationBean<>();
+	JpaRestfulServer jpaRestfulServer = new JpaRestfulServer();
     beanFactory.autowireBean(jpaRestfulServer);
     servletRegistrationBean.setServlet(jpaRestfulServer);
     servletRegistrationBean.addUrlMappings("/fhir/*");
@@ -68,7 +68,7 @@ public class Application extends SpringBootServletInitializer {
   }
 
   @Bean
-  public ServletRegistrationBean overlayRegistrationBean() {
+  public ServletRegistrationBean<DispatcherServlet> overlayRegistrationBean() {
 
     AnnotationConfigWebApplicationContext annotationConfigWebApplicationContext = new AnnotationConfigWebApplicationContext();
     annotationConfigWebApplicationContext.register(FhirTesterConfig.class);
@@ -78,7 +78,7 @@ public class Application extends SpringBootServletInitializer {
     dispatcherServlet.setContextClass(AnnotationConfigWebApplicationContext.class);
     dispatcherServlet.setContextConfigLocation(FhirTesterConfig.class.getName());
 
-    ServletRegistrationBean registrationBean = new ServletRegistrationBean();
+    ServletRegistrationBean<DispatcherServlet> registrationBean = new ServletRegistrationBean<>();
     registrationBean.setServlet(dispatcherServlet);
     registrationBean.addUrlMappings("/*");
     registrationBean.setLoadOnStartup(1);
