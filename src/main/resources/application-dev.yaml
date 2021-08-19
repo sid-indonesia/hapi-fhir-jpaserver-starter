@@ -1,6 +1,5 @@
 spring:
   datasource:
-    name: source
     url: jdbc:postgresql://localhost:5432/hapi_fhir
     username: postgres
     password: postgres
