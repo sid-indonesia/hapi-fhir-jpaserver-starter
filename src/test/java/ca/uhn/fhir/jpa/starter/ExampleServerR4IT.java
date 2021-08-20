@@ -50,7 +50,7 @@ class ExampleServerR4IT {
 
 	@Test
 	@Order(0)
-	void testCreateAndRead() throws Exception {
+	void testCreateAndRead() {
 		String methodName = "testCreateAndRead";
 		ourLog.info("Entering " + methodName + "()...");
 
@@ -65,7 +65,7 @@ class ExampleServerR4IT {
 		assertEquals(methodName, pt2.getName().get(0).getFamily());
 
 		// Wait until the MDM message has been processed
-		await().atMost(Duration.ofMinutes(1)).until(() -> getGoldenResourcePatient() != null);
+		await().atMost(1, TimeUnit.MINUTES).until(() -> getGoldenResourcePatient() != null);
 		Patient goldenRecord = getGoldenResourcePatient();
 
 		// Verify that a golden record Patient was created
@@ -156,7 +156,7 @@ class ExampleServerR4IT {
 		String ourServerBase = "http://localhost:" + port + "/fhir/";
 		ourClient = ourCtx.newRestfulGenericClient(ourServerBase);
 
-		await().atMost(Duration.ofMinutes(2)).until(() -> {
+		await().atMost(2, TimeUnit.MINUTES).until(() -> {
 			sleep(1000); // execute below function every 1 second
 			return activeSubscriptionCount() == 2; // 2 subscription based on mdm-rules.json
 		});
