@@ -1,15 +1,15 @@
-
 package ca.uhn.fhir.jpa.starter;
 
-import ca.uhn.fhir.rest.api.EncodingEnum;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import ca.uhn.fhir.rest.api.EncodingEnum;
 
 @WebSocket
 public class SocketImplementation {
@@ -42,8 +42,8 @@ public class SocketImplementation {
 	}
 
 	/**
-	 * This method is executed when the client is connecting to the server.
-	 * In this case, we are sending a message to create the subscription dynamiclly
+	 * This method is executed when the client is connecting to the server. In this
+	 * case, we are sending a message to create the subscription dynamically
 	 *
 	 * @param session
 	 */

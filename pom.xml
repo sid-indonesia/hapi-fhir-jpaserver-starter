@@ -79,7 +79,7 @@
     <dependency>
       <groupId>org.smartregister</groupId>
       <artifactId>hapi-fhir-keycloak</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.jacoco</groupId>
