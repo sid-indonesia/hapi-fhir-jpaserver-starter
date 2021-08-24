@@ -34,7 +34,7 @@ jobs:
       - name: Override Maven `settings.xml` with mirrors section
         uses: s4u/maven-settings-action@v2.4.1
         with:
-          mirrors: '[{"id": "nexus-sid", "mirrorOf": "*", "url": "${{ secrets.NEXUS_URL }}"}]'
+          mirrors: '[{"id": "nexus-sid", "name": "Nexus SID Repository", "mirrorOf": "*", "url": "${{ secrets.NEXUS_URL }}"}]'
 
       - name: Run tests
         run: mvn -B clean test
