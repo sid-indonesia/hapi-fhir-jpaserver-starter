@@ -38,4 +38,4 @@ jobs:
           mirrors: '[{"id": "nexus-sid", "name": "Nexus SID Repository", "mirrorOf": "*", "url": "${{ secrets.NEXUS_URL }}"}]'
 
       - name: Build with Maven + Code Analysis with SonarQube
-        run: mvn -B clean package integration-test sonar:sonar -Dsonar.host.url=${{ secrets.SONAR_URL }} -Dsonar.login=${{ secrets.SONAR_LOGIN }}
+        run: mvn -B clean integration-test package sonar:sonar -Dsonar.host.url=${{ secrets.SONAR_URL }} -Dsonar.login=${{ secrets.SONAR_LOGIN }}
