@@ -63,3 +63,14 @@ jobs:
           key: ${{ secrets.SSH_KEY_DEV }}
           source: ${{ steps.file-name-setter.outputs.FILE_NAME }}
           target: "downloads/hapi-fhir-jpaserver"
+
+      - name: Execute remote scripts
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST_DEV }}
+          username: ${{ secrets.SSH_USER_DEV }}
+          key: ${{ secrets.SSH_KEY_DEV }}
+          script: |
+            sudo su
+            echo "${{ secrets.SSH_USER_PASSWORD_DEV }}"
+            ./deploy-hapi-fhir-jpaserver.sh
