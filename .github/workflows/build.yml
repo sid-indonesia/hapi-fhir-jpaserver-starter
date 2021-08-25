@@ -71,6 +71,5 @@ jobs:
           username: ${{ secrets.SSH_USER_DEV }}
           key: ${{ secrets.SSH_KEY_DEV }}
           script: |
-            sudo su
-            echo "${{ secrets.SSH_USER_PASSWORD_DEV }}"
-            ./deploy-hapi-fhir-jpaserver.sh
+            echo "${{ secrets.SSH_USER_PASSWORD_DEV }}" | \
+            sudo -S ./deploy-hapi-fhir-jpaserver.sh
