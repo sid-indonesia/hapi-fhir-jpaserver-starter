@@ -62,4 +62,4 @@ jobs:
           username: ${{ secrets.SSH_USER_DEV }}
           key: ${{ secrets.SSH_KEY_DEV }}
           source: ${{ steps.file-name-setter.outputs.FILE_NAME }}
-          target: "downloads/${{ steps.file-name-setter.outputs.FILE_NAME }}"
+          target: "downloads/hapi-fhir-jpaserver"
