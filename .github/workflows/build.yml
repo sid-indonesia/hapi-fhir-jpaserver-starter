@@ -73,3 +73,11 @@ jobs:
           script: |
             echo "${{ secrets.SSH_USER_PASSWORD_DEV }}" | \
             sudo -S ./deploy-hapi-fhir-jpaserver.sh
+
+      - name: Wait until the server is ready
+        uses: cygnetdigital/wait_for_response@v2.0.0
+        with:
+          url: '${{ secrets.SID_HAPI_FHIR_DEV_URL }}/fhir/metadata'
+          responseCode: '200'
+          timeout: 2000
+          interval: 500
