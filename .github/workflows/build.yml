@@ -79,5 +79,5 @@ jobs:
         with:
           url: '${{ secrets.SID_HAPI_FHIR_DEV_URL }}/fhir/metadata'
           responseCode: '200'
-          timeout: 2000
+          timeout: 180000
           interval: 500
