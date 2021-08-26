@@ -75,9 +75,10 @@ jobs:
             sudo -S ./deploy-hapi-fhir-jpaserver.sh
 
       - name: Wait until the server is ready
-        uses: cygnetdigital/wait_for_response@v2.0.0
+        uses: mydea/action-wait-for-api@v1
         with:
-          url: '${{ secrets.SID_HAPI_FHIR_DEV_URL }}/fhir/metadata'
-          responseCode: '200'
-          timeout: 180000
-          interval: 500
+          method: "GET"
+          url: "${{ secrets.SID_HAPI_FHIR_DEV_URL }}/fhir/metadata"
+          expected-status: "200"
+          timeout: 180
+          interval: 1
