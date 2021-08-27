@@ -119,6 +119,13 @@ local.properties
 
 # STS (Spring Tool Suite)
 .springBeans
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
 # Code Recommenders
 .recommenders/
@@ -171,13 +178,6 @@ dependency-reduced-pom.xml
 buildNumber.properties
 
 ### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
