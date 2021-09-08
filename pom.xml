@@ -50,15 +50,19 @@
       </snapshots>
       <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </repository>
-    <repository>
-      <id>nexus-sid</id>
-      <url>https://nexus.sid-indonesia.org/repository/maven-public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
+   <repository>
+      <id>nexus-sid-snapshots</id>
+      <url>https://nexus.sid-indonesia.org/repository/maven-snapshots/</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+    </repository>
+    <repository>
+      <id>nexus-sid-releases</id>
+      <url>https://nexus.sid-indonesia.org/repository/maven-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
     </repository>
   </repositories>
 
