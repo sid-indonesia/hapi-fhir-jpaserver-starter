@@ -78,6 +78,11 @@
       <artifactId>websocket-client</artifactId>
       <version>${jetty_version}</version>
     </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.25</version>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -144,6 +149,20 @@
       <artifactId>hapi-fhir-jpaserver-mdm</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- This dependency is used for the "FHIR Tester" web app overlay -->
+    <dependency>
+      <groupId>ca.uhn.hapi.fhir</groupId>
+      <artifactId>hapi-fhir-testpage-overlay</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>ca.uhn.hapi.fhir</groupId>
+      <artifactId>hapi-fhir-testpage-overlay</artifactId>
+      <version>${project.version}</version>
+      <classifier>classes</classifier>
+    </dependency>
 
     <!-- HAPI-FHIR uses Logback for logging support. The logback library 
       is included automatically by Maven as a part of the hapi-fhir-base dependency, 
@@ -182,6 +201,19 @@
       <artifactId>spring-web</artifactId>
     </dependency>
 
+    <!-- You may not need this if you are deploying to an application server 
+      which provides database connection pools itself. -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <!-- This example uses H2 embedded database. If you are using another 
       database such as Mysql or Oracle, you may omit the following dependencies 
       and replace them with an appropriate database client dependency for your 
@@ -189,7 +221,6 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <!-- webjars -->
@@ -228,7 +259,7 @@
     </dependency>
 
     <!-- The following dependencies are only needed for automated unit tests, 
-      you do not necessarily need them to run the example. -->
+      you do not neccesarily need them to run the example. -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
@@ -274,6 +305,7 @@
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+
 
     <!-- For some reason JavaDoc crashed during site generation unless we 
       have this dependency -->
@@ -371,9 +403,26 @@
         </configuration>
       </plugin>
 
+      <!-- The configuration here tells the WAR plugin to include the FHIR 
+        Tester overlay. You can omit it if you are not using that feature. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Build-Time>${maven.build.timestamp}</Build-Time>
+            </manifestEntries>
+          </archive>
+          <attachClasses>true</attachClasses>
+          <overlays>
+            <overlay>
+              <groupId>ca.uhn.hapi.fhir</groupId>
+              <artifactId>hapi-fhir-testpage-overlay</artifactId>
+            </overlay>
+          </overlays>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
       </plugin>
 
       <!-- This is to run the integration tests -->
