@@ -19,9 +19,10 @@ import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
 @IntegrationTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class, properties =
   {
-    "spring.batch.job.enabled=false",
-    "hapi.fhir.fhir_version=dstu2",
-    "spring.datasource.url=jdbc:h2:mem:dbr2"
+     "spring.batch.job.enabled=false",
+     "hapi.fhir.fhir_version=dstu2",
+     "spring.datasource.url=jdbc:h2:mem:dbr2",
+	  "spring.main.allow-bean-definition-overriding=true"
   })
 class ExampleServerDstu2IT {
 

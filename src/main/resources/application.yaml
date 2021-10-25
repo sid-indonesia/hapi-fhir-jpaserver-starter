@@ -20,6 +20,9 @@ spring:
   batch:
     job:
       enabled: false
+  main:
+#    TODO 5.6.0 -> Prevent duplicate bean definitions in the Spring batch config in HAPI: see:
+    allow-bean-definition-overriding: true
 hapi:
   fhir:
     ### This is the FHIR version. Choose between, DSTU2, DSTU3, R4 or R5
@@ -57,6 +60,7 @@ hapi:
 #    default_encoding: JSON
 #    default_pretty_print: true
 #    default_page_size: 20
+#    delete_expunge_enabled: true
 #    enable_repository_validating_interceptor: false
 #    enable_index_missing_fields: false
 #    enable_index_contained_resource: false

@@ -26,10 +26,12 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.jpa.api.dao.DaoRegistry;
@@ -43,10 +45,18 @@ import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
 
 @Disabled
 @IntegrationTest
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class, properties = {
-		"spring.batch.job.enabled=false", "spring.datasource.url=jdbc:h2:mem:dbr3", "hapi.fhir.cql_enabled=true",
-		"hapi.fhir.fhir_version=dstu3", "hapi.fhir.subscription.websocket_enabled=true",
-		"hapi.fhir.allow_external_references=true", "hapi.fhir.allow_placeholder_references=true", })
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class, properties =
+  {
+     "spring.batch.job.enabled=false",
+     "spring.datasource.url=jdbc:h2:mem:dbr3",
+     "hapi.fhir.cql_enabled=true",
+     "hapi.fhir.fhir_version=dstu3",
+     "hapi.fhir.subscription.websocket_enabled=true",
+     "hapi.fhir.allow_external_references=true",
+     "hapi.fhir.allow_placeholder_references=true",
+	  "spring.main.allow-bean-definition-overriding=true"
+  })
 class ExampleServerDstu3IT implements IServerSupport {
 
 	private static final org.slf4j.Logger ourLog = org.slf4j.LoggerFactory.getLogger(ExampleServerDstu2IT.class);

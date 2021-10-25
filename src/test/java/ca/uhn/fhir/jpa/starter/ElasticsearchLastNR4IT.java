@@ -2,14 +2,17 @@ package ca.uhn.fhir.jpa.starter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.jpa.search.lastn.ElasticsearchSvcImpl;
+import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
+import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 import javax.annotation.PreDestroy;
-
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DateTimeType;
@@ -21,6 +24,7 @@ import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -28,22 +32,25 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.jpa.search.lastn.ElasticsearchSvcImpl;
-import ca.uhn.fhir.rest.client.api.IGenericClient;
-import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
-import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
-
 @IntegrationTest
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class, properties = {
-		"spring.batch.job.enabled=false", "spring.datasource.url=jdbc:h2:mem:dbr4", "hapi.fhir.fhir_version=r4",
-		"hapi.fhir.lastn_enabled=true", "elasticsearch.enabled=true",
-		// Because the port is set randomly, we will set the rest_url using the
-		// Initializer.
-		// "elasticsearch.rest_url='http://localhost:9200'",
-		"elasticsearch.username=SomeUsername", "elasticsearch.password=SomePassword", "elasticsearch.protocol=http" })
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class, properties =
+  {
+    "spring.batch.job.enabled=false",
+    "spring.datasource.url=jdbc:h2:mem:dbr4",
+    "hapi.fhir.fhir_version=r4",
+    "hapi.fhir.lastn_enabled=true",
+    "elasticsearch.enabled=true",
+    // Because the port is set randomly, we will set the rest_url using the Initializer.
+    // "elasticsearch.rest_url='http://localhost:9200'",
+    "elasticsearch.username=SomeUsername",
+    "elasticsearch.password=SomePassword",
+	 "elasticsearch.protocol=http",
+	  "spring.main.allow-bean-definition-overriding=true"
+  })
 @ContextConfiguration(initializers = ElasticsearchLastNR4IT.Initializer.class)
 class ElasticsearchLastNR4IT {
 
