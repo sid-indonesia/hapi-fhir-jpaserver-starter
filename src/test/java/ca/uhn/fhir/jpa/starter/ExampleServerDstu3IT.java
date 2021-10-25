@@ -24,6 +24,7 @@ import org.hl7.fhir.dstu3.model.Subscription;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,6 +41,7 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
 import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
 
+@Disabled
 @IntegrationTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class, properties = {
 		"spring.batch.job.enabled=false", "spring.datasource.url=jdbc:h2:mem:dbr3", "hapi.fhir.cql_enabled=true",

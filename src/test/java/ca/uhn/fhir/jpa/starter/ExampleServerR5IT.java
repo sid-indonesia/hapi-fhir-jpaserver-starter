@@ -19,6 +19,7 @@ import org.hl7.fhir.r5.model.Patient;
 import org.hl7.fhir.r5.model.Subscription;
 import org.hl7.fhir.r5.model.SubscriptionTopic;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -31,6 +32,7 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
 import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
 
+@Disabled
 @IntegrationTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class, properties = {
 		"spring.batch.job.enabled=false", "spring.datasource.url=jdbc:h2:mem:dbr5", "hapi.fhir.fhir_version=r5",
