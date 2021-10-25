@@ -18,6 +18,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 
 @ServletComponentScan(basePackageClasses = { JpaRestfulServer.class })
 @SpringBootApplication(exclude = { ElasticsearchRestClientAutoConfiguration.class })
