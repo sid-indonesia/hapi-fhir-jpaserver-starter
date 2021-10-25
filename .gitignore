@@ -181,3 +181,5 @@ buildNumber.properties
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
+
+.temp-hapi-fhir-jpaserver-starter*.txt
