@@ -400,28 +400,6 @@
         </configuration>
       </plugin>
 
-      <!-- The configuration here tells the WAR plugin to include the FHIR 
-        Tester overlay. You can omit it if you are not using that feature. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Build-Time>${maven.build.timestamp}</Build-Time>
-            </manifestEntries>
-          </archive>
-          <attachClasses>true</attachClasses>
-          <overlays>
-            <overlay>
-              <groupId>ca.uhn.hapi.fhir</groupId>
-              <artifactId>hapi-fhir-testpage-overlay</artifactId>
-            </overlay>
-          </overlays>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-        </configuration>
-      </plugin>
-
       <!-- This is to run the integration tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
