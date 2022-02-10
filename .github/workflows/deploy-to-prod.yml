@@ -1,11 +1,11 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Deploy to dev
+name: Deploy to prod
 
 on:
   push:
-    branches: [sid]
+    branches: [sid-prod]
 
 jobs:
   build:
@@ -39,8 +39,8 @@ jobs:
           name: executable-war
           path: target/*.war
 
-  deploy-to-dev:
-    name: Deploy to dev
+  deploy-to-prod:
+    name: Deploy to prod
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -56,27 +56,27 @@ jobs:
       - name: Copy WAR via SSH with key
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.SSH_HOST_DEV }}
-          username: ${{ secrets.SSH_USER_DEV }}
-          key: ${{ secrets.SSH_KEY_DEV }}
+          host: ${{ secrets.SSH_HOST_HAPI_FHIR_PROD }}
+          username: ${{ secrets.SSH_USER_HAPI_FHIR_PROD }}
+          key: ${{ secrets.SSH_KEY_HAPI_FHIR_PROD }}
           source: ${{ steps.file-name-setter.outputs.FILE_NAME }}
           target: "downloads/hapi-fhir-jpaserver"
 
       - name: Execute remote scripts
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SSH_HOST_DEV }}
-          username: ${{ secrets.SSH_USER_DEV }}
-          key: ${{ secrets.SSH_KEY_DEV }}
+          host: ${{ secrets.SSH_HOST_HAPI_FHIR_PROD }}
+          username: ${{ secrets.SSH_USER_HAPI_FHIR_PROD }}
+          key: ${{ secrets.SSH_KEY_HAPI_FHIR_PROD }}
           script: |
-            echo "${{ secrets.SSH_USER_PASSWORD_DEV }}" | \
+            echo "${{ secrets.SSH_USER_PASSWORD_HAPI_FHIR_PROD }}" | \
             sudo -S ./deploy-hapi-fhir-jpaserver.sh
 
       - name: Wait until the server is ready
         uses: mydea/action-wait-for-api@v1
         with:
           method: "GET"
-          url: "${{ secrets.SID_HAPI_FHIR_DEV_URL }}/fhir/metadata"
+          url: "${{ secrets.SID_HAPI_FHIR_PROD_URL }}/fhir/metadata"
           expected-status: "200"
           timeout: 180
           interval: 1
