@@ -44,7 +44,6 @@ import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
      "hapi.fhir.fhir_version=r5",
      "hapi.fhir.subscription.websocket_enabled=true",
 	  "hapi.fhir.subscription.websocket_enabled=true",
-	  "spring.main.allow-bean-definition-overriding=true"
   })
 class ExampleServerR5IT {
 

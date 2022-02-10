@@ -1,11 +1,9 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Build & Deploy
+name: Run Tests & Build
 
 on:
-  push:
-    branches: [sid]
   pull_request:
     branches: [sid]
 
@@ -33,52 +31,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build with Maven + Code Analysis with SonarQube
-        run: mvn -B clean integration-test package sonar:sonar -Dsonar.host.url=${{ secrets.SONAR_URL }} -Dsonar.login=${{ secrets.SONAR_LOGIN }}
-
-      - name: Upload WAR
-        uses: actions/upload-artifact@v2
-        with:
-          name: executable-war
-          path: target/*.war
-
-  deploy-to-dev:
-    name: Deploy to dev
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download WAR from build
-        uses: actions/download-artifact@v2
-        with:
-          name: executable-war
-
-      - name: Set file name
-        run: echo "::set-output name=FILE_NAME::`basename *.war`"
-        id: file-name-setter
-
-      - name: Copy WAR via SSH with key
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST_DEV }}
-          username: ${{ secrets.SSH_USER_DEV }}
-          key: ${{ secrets.SSH_KEY_DEV }}
-          source: ${{ steps.file-name-setter.outputs.FILE_NAME }}
-          target: "downloads/hapi-fhir-jpaserver"
-
-      - name: Execute remote scripts
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST_DEV }}
-          username: ${{ secrets.SSH_USER_DEV }}
-          key: ${{ secrets.SSH_KEY_DEV }}
-          script: |
-            echo "${{ secrets.SSH_USER_PASSWORD_DEV }}" | \
-            sudo -S ./deploy-hapi-fhir-jpaserver.sh
-
-      - name: Wait until the server is ready
-        uses: mydea/action-wait-for-api@v1
-        with:
-          method: "GET"
-          url: "${{ secrets.SID_HAPI_FHIR_DEV_URL }}/fhir/metadata"
-          expected-status: "200"
-          timeout: 180
-          interval: 1
+        run: >
+          mvn -B
+          -Dsonar.host.url=${{ secrets.SONAR_URL }} -Dsonar.login=${{ secrets.SONAR_LOGIN }}
+          clean integration-test package sonar:sonar
