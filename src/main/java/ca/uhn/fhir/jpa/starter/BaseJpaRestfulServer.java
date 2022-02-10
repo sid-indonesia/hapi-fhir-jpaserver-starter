@@ -11,17 +11,18 @@ import ca.uhn.fhir.jpa.api.dao.DaoRegistry;
 import ca.uhn.fhir.jpa.api.dao.IFhirSystemDao;
 import ca.uhn.fhir.jpa.binstore.BinaryStorageInterceptor;
 import ca.uhn.fhir.jpa.bulk.export.provider.BulkDataExportProvider;
+import ca.uhn.fhir.jpa.graphql.GraphQLProvider;
 import ca.uhn.fhir.jpa.interceptor.CascadingDeleteInterceptor;
 import ca.uhn.fhir.jpa.packages.IPackageInstallerSvc;
 import ca.uhn.fhir.jpa.packages.PackageInstallationSpec;
 import ca.uhn.fhir.jpa.partition.PartitionManagementProvider;
-import ca.uhn.fhir.jpa.provider.GraphQLProvider;
 import ca.uhn.fhir.jpa.provider.IJpaSystemProvider;
 import ca.uhn.fhir.jpa.provider.JpaCapabilityStatementProvider;
 import ca.uhn.fhir.jpa.provider.JpaConformanceProviderDstu2;
 import ca.uhn.fhir.jpa.provider.SubscriptionTriggeringProvider;
 import ca.uhn.fhir.jpa.provider.TerminologyUploaderProvider;
 import ca.uhn.fhir.jpa.provider.dstu3.JpaConformanceProviderDstu3;
+import ca.uhn.fhir.jpa.provider.ValueSetOperationProvider;
 import ca.uhn.fhir.jpa.search.DatabaseBackedPagingProvider;
 import ca.uhn.fhir.jpa.subscription.util.SubscriptionDebugLogInterceptor;
 import ca.uhn.fhir.mdm.provider.MdmProviderLoader;
@@ -91,6 +92,8 @@ public class BaseJpaRestfulServer extends RestfulServer {
   BulkDataExportProvider bulkDataExportProvider;
   @Autowired
   PartitionManagementProvider partitionManagementProvider;
+  @Autowired
+  ValueSetOperationProvider valueSetOperationProvider;
   @Autowired
   BinaryStorageInterceptor binaryStorageInterceptor;
   @Autowired
@@ -367,6 +370,9 @@ public class BaseJpaRestfulServer extends RestfulServer {
       registerProvider(bulkDataExportProvider);
     }
 
+    // valueSet Operations i.e $expand
+    registerProvider(valueSetOperationProvider);
+
     // Partitioning
     if (appProperties.getPartitioning() != null) {
       registerInterceptor(new RequestTenantPartitionInterceptor());
@@ -378,6 +384,9 @@ public class BaseJpaRestfulServer extends RestfulServer {
       daoConfig.setResourceServerIdStrategy(DaoConfig.IdStrategyEnum.UUID);
       daoConfig.setResourceClientIdStrategy(appProperties.getClient_id_strategy());
     }
+    //Parallel Batch GET execution settings
+  	 daoConfig.setBundleBatchPoolSize(appProperties.getBundle_batch_pool_size());
+  	 daoConfig.setBundleBatchPoolSize(appProperties.getBundle_batch_pool_max_size());
 
     if (appProperties.getImplementationGuides() != null) {
       Map<String, AppProperties.ImplementationGuide> guides = appProperties.getImplementationGuides();
@@ -404,8 +413,8 @@ public class BaseJpaRestfulServer extends RestfulServer {
       daoConfig.setLastNEnabled(true);
     }
 
+	 daoConfig.setStoreResourceInLuceneIndex(appProperties.getStore_resource_in_lucene_index_enabled());
     daoConfig.getModelConfig().setNormalizedQuantitySearchLevel(appProperties.getNormalized_quantity_search_level());
-
-		daoConfig.getModelConfig().setIndexOnContainedResources(appProperties.getEnable_index_contained_resource());
+	 daoConfig.getModelConfig().setIndexOnContainedResources(appProperties.getEnable_index_contained_resource());
   }
 }

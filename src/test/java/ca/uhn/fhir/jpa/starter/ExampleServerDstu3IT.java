@@ -55,7 +55,6 @@ import ca.uhn.fhir.rest.client.interceptor.LoggingInterceptor;
      "hapi.fhir.subscription.websocket_enabled=true",
      "hapi.fhir.allow_external_references=true",
      "hapi.fhir.allow_placeholder_references=true",
-	  "spring.main.allow-bean-definition-overriding=true"
   })
 class ExampleServerDstu3IT implements IServerSupport {
 
