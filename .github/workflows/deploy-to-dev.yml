@@ -1,0 +1,82 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Deploy to dev
+
+on:
+  push:
+    branches: [sid]
+
+jobs:
+  build:
+    name: Run Tests & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: "11"
+          distribution: "adopt"
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: mvn -B package
+
+      - name: Upload WAR
+        uses: actions/upload-artifact@v2
+        with:
+          name: executable-war
+          path: target/*.war
+
+  deploy-to-dev:
+    name: Deploy to dev
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download WAR from build
+        uses: actions/download-artifact@v2
+        with:
+          name: executable-war
+
+      - name: Set file name
+        run: echo "::set-output name=FILE_NAME::`basename *.war`"
+        id: file-name-setter
+
+      - name: Copy WAR via SSH with key
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST_DEV }}
+          username: ${{ secrets.SSH_USER_DEV }}
+          key: ${{ secrets.SSH_KEY_DEV }}
+          source: ${{ steps.file-name-setter.outputs.FILE_NAME }}
+          target: "downloads/hapi-fhir-jpaserver"
+
+      - name: Execute remote scripts
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST_DEV }}
+          username: ${{ secrets.SSH_USER_DEV }}
+          key: ${{ secrets.SSH_KEY_DEV }}
+          script: |
+            echo "${{ secrets.SSH_USER_PASSWORD_DEV }}" | \
+            sudo -S ./deploy-hapi-fhir-jpaserver.sh
+
+      - name: Wait until the server is ready
+        uses: mydea/action-wait-for-api@v1
+        with:
+          method: "GET"
+          url: "${{ secrets.SID_HAPI_FHIR_DEV_URL }}/fhir/metadata"
+          expected-status: "200"
+          timeout: 180
+          interval: 1

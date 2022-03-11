@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hapi_fhir
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    max-active: 15
+    hikari:
+      maximum-pool-size: 10
+      auto-commit: false
+
+keycloak:
+  auth-server-url: https://keycloak.dev.sid-indonesia.org/auth
+  realm: develop
+  resource: dev-client
+  public-client: true

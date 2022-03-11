@@ -18,13 +18,11 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Import;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
 
-@ServletComponentScan(basePackageClasses = {
-  JpaRestfulServer.class})
-@SpringBootApplication(exclude = {ElasticsearchRestClientAutoConfiguration.class})
-@Import({SubscriptionSubmitterConfig.class, SubscriptionProcessorConfig.class, SubscriptionChannelConfig.class, WebsocketDispatcherConfig.class, MdmConfig.class})
+@ServletComponentScan(basePackageClasses = { JpaRestfulServer.class })
+@SpringBootApplication(exclude = { ElasticsearchRestClientAutoConfiguration.class })
+@Import({ SubscriptionSubmitterConfig.class, SubscriptionProcessorConfig.class, SubscriptionChannelConfig.class,
+		WebsocketDispatcherConfig.class, MdmConfig.class })
 public class Application extends SpringBootServletInitializer {
 
   public static void main(String[] args) {
@@ -46,33 +44,14 @@ public class Application extends SpringBootServletInitializer {
 
   @Bean
   @Conditional(OnEitherVersion.class)
-  public ServletRegistrationBean hapiServletRegistration() {
-    ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
-    JpaRestfulServer jpaRestfulServer = new JpaRestfulServer();
+  public ServletRegistrationBean<JpaRestfulServer> hapiServletRegistration() {
+    ServletRegistrationBean<JpaRestfulServer> servletRegistrationBean = new ServletRegistrationBean<>();
+	JpaRestfulServer jpaRestfulServer = new JpaRestfulServer();
     beanFactory.autowireBean(jpaRestfulServer);
     servletRegistrationBean.setServlet(jpaRestfulServer);
     servletRegistrationBean.addUrlMappings("/fhir/*");
     servletRegistrationBean.setLoadOnStartup(1);
 
     return servletRegistrationBean;
-  }
-
-  @Bean
-  public ServletRegistrationBean overlayRegistrationBean() {
-
-    AnnotationConfigWebApplicationContext annotationConfigWebApplicationContext = new AnnotationConfigWebApplicationContext();
-    annotationConfigWebApplicationContext.register(FhirTesterConfig.class);
-
-    DispatcherServlet dispatcherServlet = new DispatcherServlet(
-      annotationConfigWebApplicationContext);
-    dispatcherServlet.setContextClass(AnnotationConfigWebApplicationContext.class);
-    dispatcherServlet.setContextConfigLocation(FhirTesterConfig.class.getName());
-
-    ServletRegistrationBean registrationBean = new ServletRegistrationBean();
-    registrationBean.setServlet(dispatcherServlet);
-    registrationBean.addUrlMappings("/*");
-    registrationBean.setLoadOnStartup(1);
-    return registrationBean;
-
   }
 }

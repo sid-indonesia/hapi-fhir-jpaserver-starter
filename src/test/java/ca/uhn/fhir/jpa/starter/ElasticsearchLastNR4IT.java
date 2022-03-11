@@ -35,6 +35,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
+@IntegrationTest
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class, properties =
   {
@@ -52,83 +53,83 @@ import org.testcontainers.elasticsearch.ElasticsearchContainer;
 	  "spring.main.allow-bean-definition-overriding=true"
   })
 @ContextConfiguration(initializers = ElasticsearchLastNR4IT.Initializer.class)
-public class ElasticsearchLastNR4IT {
+class ElasticsearchLastNR4IT {
 
-  private IGenericClient ourClient;
-  private FhirContext ourCtx;
+	private IGenericClient ourClient;
+	private FhirContext ourCtx;
 
-  private static final String ELASTIC_VERSION = "7.10.2";
+	private static final String ELASTIC_VERSION = "7.10.2";
 	private static final String ELASTIC_IMAGE = "docker.elastic.co/elasticsearch/elasticsearch:" + ELASTIC_VERSION;
 
 	private static ElasticsearchContainer embeddedElastic;
 
-  @Autowired
-  private ElasticsearchSvcImpl myElasticsearchSvc;
+	@Autowired
+	private ElasticsearchSvcImpl myElasticsearchSvc;
 
-  @BeforeAll
-  public static void beforeClass() {
-	  embeddedElastic = new ElasticsearchContainer(ELASTIC_IMAGE).withStartupTimeout(Duration.of(300, ChronoUnit.SECONDS));
-	  embeddedElastic.start();
-  }
-  
-  @PreDestroy
-  public void stop() {
-    embeddedElastic.stop();
-  }
+	@BeforeAll
+	public static void beforeClass() {
+		embeddedElastic = new ElasticsearchContainer(ELASTIC_IMAGE)
+			.withStartupTimeout(Duration.of(300, ChronoUnit.SECONDS));
+		embeddedElastic.start();
+	}
 
-  @LocalServerPort
-  private int port;
+	@PreDestroy
+	public void stop() {
+		embeddedElastic.stop();
+	}
 
-  @Test
-  void testLastN() throws IOException {
+	@LocalServerPort
+	private int port;
 
-    Patient pt = new Patient();
-    pt.addName().setFamily("Lastn").addGiven("Arthur");
-    IIdType id = ourClient.create().resource(pt).execute().getId().toUnqualifiedVersionless();
+	@Test
+	void testLastN() throws IOException {
 
-    Observation obs = new Observation();
-    obs.getSubject().setReferenceElement(id);
-    String observationCode = "testobservationcode";
-    String codeSystem = "http://testobservationcodesystem";
-    obs.getCode().addCoding().setCode(observationCode).setSystem(codeSystem);
-    obs.setValue(new StringType(observationCode));
-    Date effectiveDtm = new GregorianCalendar().getTime();
-    obs.setEffective(new DateTimeType(effectiveDtm));
-    obs.getCategoryFirstRep().addCoding().setCode("testcategorycode").setSystem("http://testcategorycodesystem");
-    IIdType obsId = ourClient.create().resource(obs).execute().getId().toUnqualifiedVersionless();
+		Patient pt = new Patient();
+		pt.addName().setFamily("Lastn").addGiven("Arthur");
+		IIdType id = ourClient.create().resource(pt).execute().getId().toUnqualifiedVersionless();
 
-    myElasticsearchSvc.refreshIndex(ElasticsearchSvcImpl.OBSERVATION_INDEX);
+		Observation obs = new Observation();
+		obs.getSubject().setReferenceElement(id);
+		String observationCode = "testobservationcode";
+		String codeSystem = "http://testobservationcodesystem";
+		obs.getCode().addCoding().setCode(observationCode).setSystem(codeSystem);
+		obs.setValue(new StringType(observationCode));
+		Date effectiveDtm = new GregorianCalendar().getTime();
+		obs.setEffective(new DateTimeType(effectiveDtm));
+		obs.getCategoryFirstRep().addCoding().setCode("testcategorycode").setSystem("http://testcategorycodesystem");
+		IIdType obsId = ourClient.create().resource(obs).execute().getId().toUnqualifiedVersionless();
 
-    Parameters output = ourClient.operation().onType(Observation.class).named("lastn")
-      .withParameter(Parameters.class, "max", new IntegerType(1))
-      .andParameter("subject", new StringType("Patient/" + id.getIdPart()))
-      .execute();
-    Bundle b = (Bundle) output.getParameter().get(0).getResource();
-    assertEquals(1, b.getTotal());
-    assertEquals(obsId, b.getEntry().get(0).getResource().getIdElement().toUnqualifiedVersionless());
-  }
+		myElasticsearchSvc.refreshIndex(ElasticsearchSvcImpl.OBSERVATION_INDEX);
 
-  @BeforeEach
-  void beforeEach() {
+		Parameters output = ourClient.operation().onType(Observation.class).named("lastn")
+			.withParameter(Parameters.class, "max", new IntegerType(1))
+			.andParameter("subject", new StringType("Patient/" + id.getIdPart())).execute();
+		Bundle b = (Bundle) output.getParameter().get(0).getResource();
+		assertEquals(1, b.getTotal());
+		assertEquals(obsId, b.getEntry().get(0).getResource().getIdElement().toUnqualifiedVersionless());
+	}
 
-    ourCtx = FhirContext.forR4();
-    ourCtx.getRestfulClientFactory().setServerValidationMode(ServerValidationModeEnum.NEVER);
-    ourCtx.getRestfulClientFactory().setSocketTimeout(1200 * 1000);
-    String ourServerBase = "http://localhost:" + port + "/fhir/";
-    ourClient = ourCtx.newRestfulGenericClient(ourServerBase);
-    ourClient.registerInterceptor(new LoggingInterceptor(true));
-  }
+	@BeforeEach
+	void beforeEach() {
 
-  static class Initializer
-    implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+		ourCtx = FhirContext.forR4();
+		ourCtx.getRestfulClientFactory().setServerValidationMode(ServerValidationModeEnum.NEVER);
+		ourCtx.getRestfulClientFactory().setSocketTimeout(1200 * 1000);
+		String ourServerBase = "http://localhost:" + port + "/fhir/";
+		ourClient = ourCtx.newRestfulGenericClient(ourServerBase);
+		ourClient.registerInterceptor(new LoggingInterceptor(true));
+	}
 
-    @Override
-    public void initialize(
-      ConfigurableApplicationContext configurableApplicationContext) {
-      // Since the port is dynamically generated, replace the URL with one that has the correct port
-      TestPropertyValues.of("elasticsearch.rest_url=" + embeddedElastic.getHost() +":" + embeddedElastic.getMappedPort(9200))
-        .applyTo(configurableApplicationContext.getEnvironment());
-    }
+	static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-  }
+		@Override
+		public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+			// Since the port is dynamically generated, replace the URL with one that has
+			// the correct port
+			TestPropertyValues
+				.of("elasticsearch.rest_url=" + embeddedElastic.getHost() + ":" + embeddedElastic.getMappedPort(9200))
+				.applyTo(configurableApplicationContext.getEnvironment());
+		}
+
+	}
 }

@@ -1,3 +1,6 @@
+[![Java CI with Maven](https://github.com/sid-indonesia/hapi-fhir-jpaserver-starter/actions/workflows/build.yml/badge.svg)](https://github.com/sid-indonesia/hapi-fhir-jpaserver-starter/actions/workflows/build.yml)
+[![Deploy to dev](https://github.com/sid-indonesia/hapi-fhir-jpaserver-starter/actions/workflows/deploy-to-dev.yml/badge.svg)](https://github.com/sid-indonesia/hapi-fhir-jpaserver-starter/actions/workflows/deploy-to-dev.yml)
+[![Deploy to prod](https://github.com/sid-indonesia/hapi-fhir-jpaserver-starter/actions/workflows/deploy-to-prod.yml/badge.svg?branch=sid-prod)](https://github.com/sid-indonesia/hapi-fhir-jpaserver-starter/actions/workflows/deploy-to-prod.yml)
 # HAPI-FHIR Starter Project
 
 This project is a complete starter project you can use to deploy a FHIR server using HAPI FHIR JPA.

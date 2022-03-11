@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
     <!-- one-liner to take you to the cloud with settings form the application.yaml file: -->
     <!-- 'mvn clean package com.google.cloud.tools:jib-maven-plugin:dockerBuild -Dimage=distroless-hapi && docker run -p 8080:8080 -e spring.batch.job.enabled=false distroless-hapi' -->
@@ -21,6 +21,26 @@
 
     <properties>
         <java.version>8</java.version>
+        <jacoco.version>0.8.7</jacoco.version>
+        <spring_boot_version>2.5.6</spring_boot_version>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.language>java</sonar.language>
+        <sonar.exclusions>**/aop/logging/**/*,
+          **/config/**/*,
+          **/domain/**/*,
+          **/exception/**/*,
+          **/FhirServerConfigDstu2*,
+          **/FhirServerConfigDstu3*,
+          **/FhirServerConfigR5*,
+          **/RepositoryValidationInterceptorFactoryDstu3*,
+          **/RepositoryValidationInterceptorFactoryR5*,
+          **/OnDSTU2Condition*,
+          **/OnDSTU3Condition*,
+          **/OnR5Condition*,
+          **/StarterCqlDstu3Config*</sonar.exclusions>
+        <sonar.coverage.exclusions>${sonar.exclusions}</sonar.coverage.exclusions>
+        <sonar.cpd.exclusions>**/domain/**/*</sonar.cpd.exclusions>
     </properties>
 
     <prerequisites>
@@ -39,8 +59,21 @@
             </snapshots>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>nexus-sid-snapshots</id>
+            <url>https://nexus.sid-indonesia.org/repository/maven-snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>nexus-sid-releases</id>
+            <url>https://nexus.sid-indonesia.org/repository/maven-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
     </repositories>
-
 
     <dependencies>
         <dependency>
@@ -62,6 +95,16 @@
             <artifactId>postgresql</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.smartregister</groupId>
+            <artifactId>hapi-fhir-keycloak</artifactId>
+            <version>0.0.6-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+        </dependency>
         <!-- Needed for Email subscriptions -->
         <dependency>
             <groupId>org.simplejavamail</groupId>
@@ -556,5 +599,4 @@
                 </dependency>
             </dependencies>
         </profile>
-    </profiles>
 </project>
