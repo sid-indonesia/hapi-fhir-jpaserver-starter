@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hapi_fhir
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    max-active: 15
+    hikari:
+      maximum-pool-size: 10
+      auto-commit: false
+  jpa:
+    properties:
+      hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect
+
+#hapi:
+#  fhir:
+#    dao_scheduling_enabled: false
+#    mdm_enabled: false
+#    delete_expunge_enabled: false
