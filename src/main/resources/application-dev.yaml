@@ -14,3 +14,10 @@ keycloak:
   realm: develop
   resource: dev-client
   public-client: true
+
+hapi:
+  fhir:
+    server_address: https://hapi-fhir.dev.sid-indonesia.org/fhir
+    #dao_scheduling_enabled: false
+    #mdm_enabled: false
+    delete_expunge_enabled: true
