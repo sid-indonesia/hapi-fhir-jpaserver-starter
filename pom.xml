@@ -22,7 +22,7 @@
     <properties>
         <java.version>8</java.version>
         <jacoco.version>0.8.7</jacoco.version>
-        <spring_boot_version>2.5.6</spring_boot_version>
+        <spring_boot_version>2.6.6</spring_boot_version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.language>java</sonar.language>
