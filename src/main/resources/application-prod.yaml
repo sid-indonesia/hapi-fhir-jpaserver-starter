@@ -12,8 +12,19 @@ spring:
     properties:
       hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect
 
-#hapi:
-#  fhir:
-#    dao_scheduling_enabled: false
-#    mdm_enabled: false
+keycloak:
+  auth-server-url: https://keycloak.sid-indonesia.org/auth
+  realm: hapi-fhir
+  resource: prod-client
+  credentials:
+    secret: the-secret
+
+hapi:
+  fhir:
+    server_address: https://hapi-fhir.sid-indonesia.org/fhir
+    mdm_enabled: false
+#    default_resource_encoding: JSON
+    inline_resource_storage_below_size: 2147483647 # Integer.MAX_VALUE
 #    delete_expunge_enabled: false
+#    advanced_lucene_indexing: false
+#    dao_scheduling_enabled: false

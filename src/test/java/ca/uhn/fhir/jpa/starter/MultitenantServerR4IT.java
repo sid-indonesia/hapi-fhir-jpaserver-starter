@@ -24,9 +24,8 @@ import ca.uhn.fhir.rest.server.provider.ProviderConstants;
 
 @IntegrationTest
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class, properties =
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {Application.class, JpaStarterWebsocketDispatcherConfig.class}, properties =
   {
-    "spring.batch.job.enabled=false",
     "spring.datasource.url=jdbc:h2:mem:dbr4-mt",
     "hapi.fhir.fhir_version=r4",
     "hapi.fhir.subscription.websocket_enabled=true",

@@ -11,17 +11,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @ConfigurationProperties(prefix = "hapi.fhir")
 @Configuration
 @EnableConfigurationProperties
 public class AppProperties {
 
-  private Boolean cql_enabled = false;
+  private Boolean cr_enabled = false;
+  private Boolean ips_enabled = false;
   private Boolean openapi_enabled = false;
   private Boolean mdm_enabled = false;
   private boolean advanced_lucene_indexing = false;
+  private boolean enable_index_of_type = false;
   private Boolean allow_cascading_deletes = false;
   private Boolean allow_contains_searches = true;
   private Boolean allow_external_references = false;
@@ -41,7 +46,9 @@ public class AppProperties {
   private Boolean filter_search_enabled = true;
   private Boolean graphql_enabled = false;
   private Boolean binary_storage_enabled = false;
+  private Integer inline_resource_storage_below_size = 0;
   private Boolean bulk_export_enabled = false;
+  private Boolean bulk_import_enabled = false;
   private Boolean default_pretty_print = true;
   private Integer default_page_size = 20;
   private Integer max_binary_size = null;
@@ -66,19 +73,34 @@ public class AppProperties {
   private Boolean install_transitive_ig_dependencies = true;
   private Map<String, ImplementationGuide> implementationGuides = null;
 
+	private String staticLocation = null;
+
   private Boolean lastn_enabled = false;
   private boolean store_resource_in_lucene_index_enabled = false;
   private NormalizedQuantitySearchLevel normalized_quantity_search_level = NormalizedQuantitySearchLevel.NORMALIZED_QUANTITY_SEARCH_NOT_SUPPORTED;
 
-  private Integer search_coord_core_pool_size = 20;
-  private Integer search_coord_max_pool_size = 100;
-  private Integer search_coord_queue_capacity = 200;
   private Boolean use_apache_address_strategy = false;
   private Boolean use_apache_address_strategy_https = false;
 
   private Integer bundle_batch_pool_size = 20;
   private Integer bundle_batch_pool_max_size = 100;
-  private List<String> local_base_urls = new ArrayList<>();
+  private final List<String> local_base_urls = new ArrayList<>();
+  
+  private final List<String> custom_interceptor_classes = new ArrayList<>();
+
+  public List<String> getCustomInterceptorClasses() {
+    return custom_interceptor_classes;
+  }
+
+
+	public String getStaticLocation() {
+		return staticLocation;
+	}
+
+	public void setStaticLocation(String staticLocation) {
+		this.staticLocation = staticLocation;
+	}
+
 
 	public Boolean getOpenapi_enabled() {
 		return openapi_enabled;
@@ -128,13 +150,22 @@ public class AppProperties {
     this.partitioning = partitioning;
   }
 
-  public Boolean getCql_enabled() {
-    return cql_enabled;
+  public Boolean getCr_enabled() {
+    return cr_enabled;
   }
 
-  public void setCql_enabled(Boolean cql_enabled) {
-    this.cql_enabled = cql_enabled;
+  public void setCr_enabled(Boolean cr_enabled) {
+    this.cr_enabled = cr_enabled;
   }
+
+  public Boolean getIps_enabled() {
+	return ips_enabled;
+ }
+
+ public void setIps_enabled(Boolean ips_enabled) {
+	this.ips_enabled = ips_enabled;
+ }
+
 
   public Boolean getMdm_enabled() {
     return mdm_enabled;
@@ -199,10 +230,6 @@ public class AppProperties {
   public void setSupported_resource_types(List<String> supported_resource_types) {
     this.supported_resource_types = supported_resource_types;
   }
-
-	public List<String> getSupported_resource_types(List<String> supported_resource_types) {
-		return this.supported_resource_types;
-	}
 
 	public Logger getLogger() {
     return logger;
@@ -393,12 +420,28 @@ public class AppProperties {
     this.binary_storage_enabled = binary_storage_enabled;
   }
 
-  public Boolean getBulk_export_enabled() {
+	public Integer getInline_resource_storage_below_size() {
+		return inline_resource_storage_below_size;
+	}
+
+	public void setInline_resource_storage_below_size(Integer inline_resource_storage_below_size) {
+		this.inline_resource_storage_below_size = inline_resource_storage_below_size;
+	}
+
+	public Boolean getBulk_export_enabled() {
     return bulk_export_enabled;
   }
 
   public void setBulk_export_enabled(Boolean bulk_export_enabled) {
     this.bulk_export_enabled = bulk_export_enabled;
+  }
+
+  public Boolean getBulk_import_enabled() {
+    return bulk_import_enabled;
+  }
+
+  public void setBulk_import_enabled(Boolean bulk_import_enabled) {
+    this.bulk_import_enabled = bulk_import_enabled;
   }
 
   public EncodingEnum getDefault_encoding() {
@@ -493,24 +536,6 @@ public class AppProperties {
 
   public void setNormalized_quantity_search_level(NormalizedQuantitySearchLevel normalized_quantity_search_level) {
 	this.normalized_quantity_search_level = normalized_quantity_search_level;
-  }
-
-  public Integer getSearch_coord_core_pool_size() { return search_coord_core_pool_size; }
-
-  public void setSearch_coord_core_pool_size(Integer search_coord_core_pool_size) {
-    this.search_coord_core_pool_size = search_coord_core_pool_size;
-  }
-
-  public Integer getSearch_coord_max_pool_size() { return search_coord_max_pool_size; }
-
-  public void setSearch_coord_max_pool_size(Integer search_coord_max_pool_size) {
-    this.search_coord_max_pool_size = search_coord_max_pool_size;
-  }
-
-  public Integer getSearch_coord_queue_capacity() { return search_coord_queue_capacity; }
-
-  public void setSearch_coord_queue_capacity(Integer search_coord_queue_capacity) {
-  	 this.search_coord_queue_capacity = search_coord_queue_capacity;
   }
 
 	public boolean getInstall_transitive_ig_dependencies() {
@@ -833,5 +858,13 @@ public class AppProperties {
       private Boolean startTlsRequired = false;
       private Boolean quitWait = false;
     }
+  }
+
+  public boolean getEnable_index_of_type() {
+    return enable_index_of_type;
+  }
+
+  public void setEnable_index_of_type(boolean enable_index_of_type) {
+    this.enable_index_of_type = enable_index_of_type;
   }
 }
