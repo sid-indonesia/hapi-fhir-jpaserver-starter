@@ -17,7 +17,6 @@ import ca.uhn.fhir.rest.server.mail.MailConfig;
 import ca.uhn.fhir.rest.server.mail.MailSvc;
 import com.google.common.base.Strings;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
-import org.hl7.fhir.dstu2.model.Subscription;
 import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,6 +40,8 @@ public class FhirServerConfigCommon {
 
 
   public FhirServerConfigCommon(AppProperties appProperties) {
+		ourLog.info("Server configured to {} for inline resource storage below size",
+			appProperties.getInline_resource_storage_below_size());
     ourLog.info("Server configured to " + (appProperties.getAllow_contains_searches() ? "allow" : "deny") + " contains searches");
     ourLog.info("Server configured to " + (appProperties.getAllow_multiple_delete() ? "allow" : "deny") + " multiple deletes");
     ourLog.info("Server configured to " + (appProperties.getAllow_external_references() ? "allow" : "deny") + " external references");
@@ -156,7 +157,7 @@ public class FhirServerConfigCommon {
     }
     //Parallel Batch GET execution settings
 	  daoConfig.setBundleBatchPoolSize(appProperties.getBundle_batch_pool_size());
-	  daoConfig.setBundleBatchPoolSize(appProperties.getBundle_batch_pool_max_size());
+	  daoConfig.setBundleBatchMaxPoolSize(appProperties.getBundle_batch_pool_max_size());
 
 
     return daoConfig;
