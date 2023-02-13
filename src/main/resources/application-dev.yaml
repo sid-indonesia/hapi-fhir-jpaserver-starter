@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:32768/hapi_fhir
-    username: hapi_fhir_admin
-    password: hapi_fhir_adminpw
+    url: jdbc:postgresql://the-address-to-dev-dbms/hapi_fhir
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
     max-active: 15
     hikari:
@@ -20,7 +20,7 @@ keycloak:
 
 hapi:
   fhir:
-#    server_address: https://hapi-fhir.dev.sid-indonesia.org/fhir
+    server_address: https://hapi-fhir.dev.sid-indonesia.org/fhir
     mdm_enabled: false
     delete_expunge_enabled: true
 #    default_resource_encoding: JSON
