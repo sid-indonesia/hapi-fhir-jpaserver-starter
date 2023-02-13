@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://the-address-to-prod-dbms/hapi_fhir
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:32768/hapi_fhir
+    username: hapi_fhir_admin
+    password: hapi_fhir_adminpw
     driver-class-name: org.postgresql.Driver
     max-active: 15
     hikari:
@@ -13,18 +13,16 @@ spring:
       hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect
 
 keycloak:
-  auth-server-url: https://keycloak.sid-indonesia.org/auth
+  auth-server-url: https://keycloak.dev.sid-indonesia.org/auth
   realm: hapi-fhir
-  resource: prod-client
-  credentials:
-    secret: the-secret
+  resource: dev-client
+  public-client: true
 
 hapi:
   fhir:
-    server_address: https://hapi-fhir.sid-indonesia.org/fhir
+#    server_address: https://hapi-fhir.dev.sid-indonesia.org/fhir
     mdm_enabled: false
+    delete_expunge_enabled: true
 #    default_resource_encoding: JSON
     inline_resource_storage_below_size: 2147483647 # Integer.MAX_VALUE
-#    delete_expunge_enabled: false
-#    advanced_lucene_indexing: false
 #    dao_scheduling_enabled: false

@@ -24,6 +24,25 @@
         <java.version>11</java.version>
         <logback-classic.version>1.2.11</logback-classic.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
+        <jacoco.version>0.8.8</jacoco.version>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.language>java</sonar.language>
+        <sonar.exclusions>**/aop/logging/**/*,
+          **/config/**/*,
+          **/domain/**/*,
+          **/exception/**/*,
+          **/FhirServerConfigDstu2*,
+          **/FhirServerConfigDstu3*,
+          **/FhirServerConfigR5*,
+          **/RepositoryValidationInterceptorFactoryDstu3*,
+          **/RepositoryValidationInterceptorFactoryR5*,
+          **/OnDSTU2Condition*,
+          **/OnDSTU3Condition*,
+          **/OnR5Condition*,
+          **/StarterCqlDstu3Config*</sonar.exclusions>
+        <sonar.coverage.exclusions>${sonar.exclusions}</sonar.coverage.exclusions>
+        <sonar.cpd.exclusions>**/domain/**/*</sonar.cpd.exclusions>
     </properties>
 
     <prerequisites>
@@ -55,16 +74,26 @@
             <version>${jetty_version}</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
         <dependency>
           <groupId>com.microsoft.sqlserver</groupId>
           <artifactId>mssql-jdbc</artifactId>
+        </dependency>
+
+        <!-- Needed for adding integration to Keycloak -->
+        <dependency>
+            <groupId>org.smartregister</groupId>
+            <artifactId>hapi-fhir-keycloak</artifactId>
+            <version>0.0.7-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Needed for Sonar scan -->
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
         </dependency>
 
         <!-- Needed for Email subscriptions -->
@@ -554,6 +583,29 @@
                         <ignoredResourcePattern>.*\.html$</ignoredResourcePattern>
                         <ignoredResourcePattern>config/favicon.ico</ignoredResourcePattern>
                     </ignoredResourcePatterns>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>${sonar.exclusions}</excludes>
                 </configuration>
             </plugin>
         </plugins>
