@@ -200,6 +200,9 @@ spring:
   jpa:
     properties:
       hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect
+      hibernate.search.enabled: false
+
+      # Then comment all hibernate.search.backend.*
 ```
 
 Because the integration tests within the project rely on the default H2 database configuration, it is important to either explicity skip the integration tests during the build process, i.e., `mvn install -DskipTests`, or delete the tests altogether. Failure to skip or delete the tests once you've configured PostgreSQL for the datasource.driver, datasource.url, and hibernate.dialect as outlined above will result in build errors and compilation failure.
@@ -292,7 +295,7 @@ reached at http://localhost:8080/.
 In order to use another port, change the `ports` parameter
 inside `docker-compose.yml` to `8888:8080`, where 8888 is a port of your choice.
 
-The docker compose set also includes my PoPostgreSQL database, if you choose to use PostgreSQL instead of H2, change the following
+The docker compose set also includes PostgreSQL database, if you choose to use PostgreSQL instead of H2, change the following
 properties in `src/main/resources/application.yaml`:
 
 ```yaml
@@ -305,6 +308,9 @@ spring:
 jpa:
   properties:
     hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect
+    hibernate.search.enabled: false
+
+    # Then comment all hibernate.search.backend.*
 ```
 
 ## Running hapi-fhir-jpaserver directly from IntelliJ as Spring Boot
