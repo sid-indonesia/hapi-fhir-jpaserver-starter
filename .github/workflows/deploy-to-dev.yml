@@ -58,10 +58,15 @@ jobs:
           source: ROOT.war
           target: "downloads/hapi-fhir-jpaserver"
 
-      - name: Sleep for 10s to wait for Tomcat re-deploy WAR
-        uses: juliangruber/sleep-action@v2.0.0
+      - name: Execute remote scripts
+        uses: appleboy/ssh-action@master
         with:
-          time: 10s
+          host: ${{ secrets.SSH_HOST_DEV }}
+          username: ${{ secrets.SSH_USER_DEV }}
+          key: ${{ secrets.SSH_KEY_DEV }}
+          script: |
+            echo "${{ secrets.SSH_USER_PASSWORD_DEV }}" | \
+            sudo -S ./deploy-hapi-fhir-jpaserver.sh
 
       - name: Wait until the FHIR server is ready
         uses: mydea/action-wait-for-api@v1
